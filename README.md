@@ -1,5 +1,7 @@
 # Watch Your Temps
 
+[English](#english) • [Русский](#русский)
+
 > **Why this exists / Зачем это нужно**
 >
 > **EN:** I needed a quick, readable temperature view for a home Proxmox server. The raw outputs of `sensors` and `smartctl` were noisy and hard to scan in `watch`, so I made a one‑liner that renders a compact, colorized table that’s easy to scan at a glance.
@@ -76,6 +78,8 @@ watch -c -n1 --no-title bash -lc 'date "+%F %T"; echo "=== CPU ==="; sensors 2>/
 If enough people star/use it, I’ll add an optional "full" script with flags (`--nvme`, `--disk`, `--cpu-warn`, etc.), `-h` help and better autodetection.
 
 ---
+
+[English](#english) • [Русский](#русский)
 
 ## Русский
 
